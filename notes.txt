@@ -1,0 +1,9 @@
+1.Convert the project to module based api follow below pattern 
+routes-controller-services-models 
+2.Use .env files for configurations 
+3.Use Validators for the validations , like express validator and developed middlewares for that 
+4.Convert your file related code to async and await for better readbility 
+5.Enable error handling in code , use try catch blocks properly , Try to learn global exception handler 
+6.Also check you have to replace the data or have to append the data 
+7.Developed the an module for handling your responses so , you have to write it like res.status(200) for everytime when there is success 
+
