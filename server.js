@@ -1,51 +1,46 @@
-
-const express = require("express");
-const fs = require("fs");
-const bodyParser = require("body-parser");
+const express = require('express');
+const fs = require('fs');
 
 const app = express();
 const PORT = 3000;
-const FILE_PATH = "formData.json";
 
-
-app.use(bodyParser.json());
-
-
-app.post("/form", (req, res) => {
-  const formData = req.body;
-
-  
-  if (!formData.id || !Array.isArray(formData.fields)) {
-    return res.status(400).json({
-      message: "Invalid form structure. Must include 'id' and 'fields' (array).",
-    });
+// Load tasks data
+let tasks = [];
+fs.readFile('tasks.json', (err, data) => {
+  if (err) {
+    console.error('Error reading tasks.json:', err);
+    tasks = [];
+  } else {
+    tasks = JSON.parse(data);
   }
+});
 
-  
-  fs.writeFile(FILE_PATH, JSON.stringify(formData, null, 2), (err) => {
-    if (err) {
-      return res.status(500).json({ message: "Failed to save form data." });
-    }
-    res.status(201).json({ message: "Form data saved successfully." });
+// Endpoint: GET /tasks/stats
+app.get('/tasks/stats', (req, res) => {
+  // Total number of tasks
+  const totalTasks = tasks.length;
+
+  // Number of tasks per status
+  const tasksByStatus = tasks.reduce((acc, task) => {
+    acc[task.status] = (acc[task.status] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Number of tasks per user
+  const tasksByUser = tasks.reduce((acc, task) => {
+    acc[task.userId] = (acc[task.userId] || 0) + 1;
+    return acc;
+  }, {});
+
+  // Response
+  res.json({
+    totalTasks,
+    tasksByStatus,
+    tasksByUser,
   });
 });
 
-
-app.get("/form", (req, res) => {
- 
-  fs.readFile(FILE_PATH, "utf8", (err, data) => {
-    if (err) {
-      if (err.code === "ENOENT") {
-        return res.status(404).json({ message: "No form data found." });
-      }
-      return res.status(500).json({ message: "Failed to retrieve form data." });
-    }
-
-    res.status(200).json(JSON.parse(data));
-  });
-});
-
-
+// Start the server
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server is running on http://localhost:${PORT}`);
 });

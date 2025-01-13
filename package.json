@@ -1,5 +1,5 @@
 {
-  "name": "rest-api-task",
+  "name": "data-aggregation-api",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
@@ -10,7 +10,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "body-parser": "^1.20.3",
     "express": "^4.21.2"
   }
 }
